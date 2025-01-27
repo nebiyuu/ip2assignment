@@ -1,0 +1,92 @@
+/* General Styling for both index.php and redirect.php */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* Container to center the content */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+/* Title Styling */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Instructions or Subheading */
+p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #555;
+}
+
+/* Buttons for Role Selection */
+form button {
+    padding: 15px 32px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+    width: 200px;
+    color: white; /* Default text color */
+}
+
+/* Admin Login Button */
+form button[name="role"][value="admin"] {
+    background-color: #007bff; /* Blue color */
+}
+
+form button[name="role"][value="admin"]:hover {
+    background-color: #0056b3;
+}
+
+form button[name="role"][value="admin"]:active {
+    background-color: #004085;
+}
+
+/* User Login Button */
+form button[name="role"][value="user"] {
+    background-color: #28a745; /* Green color */
+}
+
+form button[name="role"][value="user"]:hover {
+    background-color: #218838;
+}
+
+form button[name="role"][value="user"]:active {
+    background-color: #1e7e34;
+}
+
+/* Add a subtle hover effect for all buttons */
+form button:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .landing-container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+}
