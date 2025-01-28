@@ -1,56 +1,29 @@
 <?php
 session_start();
+require_once('classes/Database.php');
+require_once('classes/Admin.php');
 
-// Database connection details
-$servername = "localhost";
-$username = "root";  // Replace with your MySQL username
-$password = "";  // Replace with your MySQL password
-$dbname = "ecommerce_db"; // Your database name
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$error_message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get user input
-    $input_username = $_POST['username'];
-    $input_password = $_POST['password'];
-
-    // Query the database for the user
-    $sql = "SELECT * FROM admins WHERE username = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $input_username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        // User found, verify password
-        $user = $result->fetch_assoc();
-        if (password_verify($input_password, $user['password'])) {
-            // Password is correct, start a session
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['username'] = $user['username']; // Store username or other details if needed
-            header("Location: dashboard.php"); // Redirect to the admin dashboard
+    try {
+        $admin = new Admin();
+        if ($admin->login($_POST['username'], $_POST['password'])) {
+            header("Location: ecommerce.php");
             exit;
         } else {
-            $error_message = "Invalid password.";
+            $error_message = "Invalid username or password.";
         }
-    } else {
-        $error_message = "No user found with that username.";
+    } catch (Exception $e) {
+        $error_message = $e->getMessage();
     }
-
-    $stmt->close();
 }
 
-// Close the connection
-$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,7 +63,8 @@ $conn->close();
             margin-bottom: 5px;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -119,29 +93,31 @@ $conn->close();
         }
     </style>
 </head>
+
 <body>
 
-<div class="login-container">
-    <h2>Admin Login</h2>
+    <div class="login-container">
+        <h2>Admin Login</h2>
 
-    <?php if (isset($error_message)): ?>
-        <div class="error-message"><?php echo $error_message; ?></div>
-    <?php endif; ?>
+        <?php if (isset($error_message)): ?>
+            <div class="error-message"><?php echo $error_message; ?></div>
+        <?php endif; ?>
 
-    <form method="POST">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
 
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
 
-        <input type="submit" value="Login">
-    </form>
-</div>
+            <input type="submit" value="Login">
+        </form>
+    </div>
 
 </body>
+
 </html>

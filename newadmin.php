@@ -1,9 +1,20 @@
 <?php
-// Database connection
-$servername = "localhost";
-$username = "root";  // Replace with your MySQL username
-$password = "";  // Replace with your MySQL password
-$dbname = "ecommerce_db"; // Your database name
+require_once('classes/Database.php');
+require_once('classes/Admin.php');
+
+$error_message = '';
+$success_message = '';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    try {
+        $admin = new Admin();
+        if ($admin->createAdmin($_POST['username'], $_POST['password'])) {
+            $success_message = "New admin added successfully!";
+        }
+    } catch (Exception $e) {
+        $error_message = $e->getMessage();
+    }
+}
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -12,48 +23,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the admin details from the form
-    $input_username = $_POST['username'];
-    $input_password = $_POST['password'];
-
-    // Validate username and password
-    if (empty($input_username) || empty($input_password)) {
-        $error_message = "Username and password cannot be empty.";
-    } else {
-        // Hash the password before storing it
-        $hashed_password = password_hash($input_password, PASSWORD_DEFAULT);
-
-        // Check if the username already exists
-        $sql = "SELECT * FROM admins WHERE username = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $input_username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $error_message = "Username already exists.";
-        } else {
-            // Insert the new admin into the database
-            $insert_sql = "INSERT INTO admins (username, password) VALUES (?, ?)";
-            $stmt = $conn->prepare($insert_sql);
-            $stmt->bind_param("ss", $input_username, $hashed_password);
-            if ($stmt->execute()) {
-                $success_message = "New admin added successfully!";
-            } else {
-                $error_message = "Error adding admin.";
-            }
-        }
-
-        $stmt->close();
-    }
-}
-
 $conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -93,7 +68,8 @@ $conn->close();
             margin-bottom: 5px;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -128,33 +104,35 @@ $conn->close();
         }
     </style>
 </head>
+
 <body>
 
-<div class="admin-container">
-    <h2>Add New Admin</h2>
+    <div class="admin-container">
+        <h2>Add New Admin</h2>
 
-    <?php if (isset($error_message)): ?>
-        <div class="error-message"><?php echo $error_message; ?></div>
-    <?php endif; ?>
+        <?php if (isset($error_message)): ?>
+            <div class="error-message"><?php echo $error_message; ?></div>
+        <?php endif; ?>
 
-    <?php if (isset($success_message)): ?>
-        <div class="success-message"><?php echo $success_message; ?></div>
-    <?php endif; ?>
+        <?php if (isset($success_message)): ?>
+            <div class="success-message"><?php echo $success_message; ?></div>
+        <?php endif; ?>
 
-    <form method="POST">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
 
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
 
-        <input type="submit" value="Add Admin">
-    </form>
-</div>
+            <input type="submit" value="Add Admin">
+        </form>
+    </div>
 
 </body>
+
 </html>
