@@ -1,30 +1,3 @@
-<?php
-session_start();
-require_once('classes/Database.php');
-require_once('classes/Product.php');
-
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
-
-// Initialize Product class
-$productObj = new Product();
-
-// Fetch products
-$new_arrivals_result = $productObj->getNewArrivals();
-$on_sale_result = $productObj->getOnSaleProducts();
-$categories_result = $productObj->getCategories();
-
-// Fetch products for each category
-$category_products = [];
-while ($category = $categories_result->fetch_assoc()) {
-    $category_name = $category['category'];
-    $category_products[$category_name] = $productObj->getProductsByCategory($category_name);
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 

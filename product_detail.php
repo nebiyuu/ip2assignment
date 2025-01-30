@@ -49,47 +49,50 @@ if (isset($_POST['add_to_cart'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $product['name']; ?> - Product Details</title>
-    <link rel="stylesheet" href="style.css">  <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
 </head>
+
 <body>
 
-<div class="product-detail-container">
-    <h1><?php echo $product['name']; ?></h1>
+    <div class="product-detail-container">
+        <h1><?php echo $product['name']; ?></h1>
 
-    <div class="product-detail">
-        <!-- Product Image -->
-        <div class="product-image">
-            <img src="images/<?php echo $product['id']; ?>.jpg" alt="<?php echo $product['name']; ?>">
-        </div>
+        <div class="product-detail">
+            <!-- Product Image -->
+            <div class="product-image">
+                <img src="images/<?php echo $product['id']; ?>.jpg" alt="<?php echo $product['name']; ?>">
+            </div>
 
-        <!-- Product Info -->
-        <div class="product-info">
-            <p class="product-price">$<?php echo number_format($product['price'], 2); ?></p>
-            <p class="product-description"><?php echo nl2br($product['description']); ?></p>
+            <!-- Product Info -->
+            <div class="product-info">
+                <p class="product-price">$<?php echo number_format($product['price'], 2); ?></p>
+                <p class="product-description"><?php echo nl2br($product['description']); ?></p>
 
-            <form action="product_detail.php?id=<?php echo $product_id; ?>" method="POST">
-                <div class="product-actions">
-                    <!-- Add to Cart -->
-                    <div class="quantity">
-                        <label for="quantity">Quantity:</label>
-                        <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+                <form action="../product_detail.php?id=<?php echo $product_id; ?>" method="POST">
+                    <div class="product-actions">
+                        <!-- Add to Cart -->
+                        <div class="quantity">
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+                        </div>
+
+                        <button type="submit" name="add_to_cart" class="btn">Add to Cart</button>
+                        <button type="submit" name="add_to_favorites" class="btn">Add to Favorites</button>
                     </div>
+                </form>
+            </div>
+        </div>
 
-                    <button type="submit" name="add_to_cart" class="btn">Add to Cart</button>
-                    <button type="submit" name="add_to_favorites" class="btn">Add to Favorites</button>
-                </div>
-            </form>
+        <div class="product-category">
+            <p>Category: <?php echo $product['category']; ?></p>
         </div>
     </div>
-
-    <div class="product-category">
-        <p>Category: <?php echo $product['category']; ?></p>
-    </div>
-</div>
 
 </body>
+
 </html>

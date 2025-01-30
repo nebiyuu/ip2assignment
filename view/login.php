@@ -1,26 +1,3 @@
-<?php
-session_start();
-require_once('classes/Database.php');
-require_once('classes/Admin.php');
-
-$error_message = '';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    try {
-        $admin = new Admin();
-        if ($admin->login($_POST['username'], $_POST['password'])) {
-            header("Location: ecommerce.php");
-            exit;
-        } else {
-            $error_message = "Invalid username or password.";
-        }
-    } catch (Exception $e) {
-        $error_message = $e->getMessage();
-    }
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -103,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="error-message"><?php echo $error_message; ?></div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form action="../controller/logincontroller.php" method="post">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>

@@ -5,16 +5,23 @@ require_once('classes/User.php');
 
 $error_message = '';
 
+// Check if the form was submitted via POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
+        // Create new User object
         $user = new User();
+
+        // Attempt to log in with submitted username and password
         if ($user->login($_POST['username'], $_POST['password'])) {
-            header("Location: home.php");
+            // If login successful, redirect to home page
+            header("Location: view\home.php");
             exit();
         } else {
+            // If login failed, set error message
             $error_message = "Invalid username or password";
         }
     } catch (Exception $e) {
+        // Catch and display any exceptions that occur
         $error_message = $e->getMessage();
     }
 }
